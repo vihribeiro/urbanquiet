@@ -32,8 +32,17 @@ O UrbanQuiet opera em um ciclo contínuo de amostragem acústica, processamento 
 O hardware foi projetado para ser acessível, modular e replicável. A arquitetura física é descrita a seguir:
 
 * **Plataforma de Desenvolvimento**: ESP32 DevKit V1 (Processador Dual-Core Xtensa 32-bit LX6 operando a 240 MHz, Wi-Fi 802.11 b/g/n integrado, Conversor Analógico-Digital (ADC) de 12 bits com resolução de 4096 níveis).
+  
+  ![ESP32 e Pinagem](imagens/placa_esp32+diagrama_de_pinagem.png)
+
 * **Sensor Acústico**: Módulo Sensor de Som KY-038, composto por um microfone de condensador de alta sensibilidade e um comparador analógico LM393.
+  
+  ![Sensor de Som KY-038](imagens/sensor_ruido.png)
+
 * **Atuador Visual**: Fita ou Matriz de LED RGB WS2812B (endereçável, alimentação 5V, protocolo de controle por pino único de dados).
+  
+  ![Fita LED RGB WS2812B](imagens/fita_led_RGB.png)
+
 * **Alimentação**: Fonte externa estabilizada de 5V DC com capacidade de corrente de 2A, necessária para suportar picos de corrente da fita de LEDs e a antena Wi-Fi do ESP32.
 
 ### Esquema de Pinagem e Conexões
@@ -116,30 +125,21 @@ Desenvolvido em HTML5/CSS3 baunilha com JavaScript puro para garantir responsivi
 
 ---
 
-## 6. Resultados e Funcionamento do Protótipo
+## 6. Resultados e Funcionamento do Protótipo (Simulação Wokwi)
 
-Abaixo estão exibidas as capturas de tela dos experimentos reais conduzidos na dashboard do **UrbanQuiet**, as quais comprovam o correto funcionamento da calibração MQTT de tempo real e o cálculo das médias de latência de sensor e atuador:
+O protótipo do **UrbanQuiet** foi simulado e verificado no ambiente virtual **Wokwi**, demonstrando o correto acionamento físico do atuador de acordo com os níveis de ruído medidos:
 
-### Visão Geral do Painel e Gráficos de Monitoramento
-O painel exibe de forma clara e limpa os decibéis estimados, a classificação de risco OMS e a calibração de tempo ativa:
-![Dashboard Visão Geral](imagens/dashboard_view.png)
+### Cenário 1: Nível de Ruído 0% (Verde - Som Ambiente Seguro)
+Quando o ruído detectado está em níveis confortáveis (abaixo de 25% ou 50 dB), a fita de LEDs acende na cor **verde**, indicando que o ambiente está silencioso e em conformidade.
+![Simulação Ruído Seguro - Verde](imagens/simulacao_nivel_ruido_0_verde.png)
 
-O monitor acústico plota de forma contínua a curva de ruído do ambiente:
-![Gráficos de Tempo Real](imagens/realtime_chart.png)
+### Cenário 2: Nível de Ruído 55% (Amarelo - Alerta / Limite de Ruído)
+Ao atingir níveis moderados de ruído (maiores que 25% e menores que 80%, ex: 55% ou 80 dB), a fita de LEDs transita imediatamente para a cor **amarela**, servindo como alerta visual no ambiente.
+![Simulação Ruído Limite - Amarelo](imagens/simulacao_nivel_ruido_55_amarelo.png)
 
-### Experimento de Latência (Baterias de Teste do Item 7)
-Medições automáticas do sensor e testes de disparo do atuador preenchendo as tabelas de métricas locais:
-![Resultados de Latência](imagens/latency_metrics.png)
-
-Gráfico de barras gerado pelo sistema comparando os tempos em milissegundos das 4 rodadas e a média:
-![Gráfico de Barras de Latência](imagens/latency_chart.png)
-
-### Console de Auditoria e Teste do Atuador Físico
-O console de logs da dashboard detalha cada mensagem MQTT transmitida e recebida:
-![Logs MQTT](imagens/mqtt_logs.png)
-
-Exemplo de visualização física simulada da montagem em hardware conectada:
-![Teste Físico dos LEDs](imagens/hardware_assembly.png)
+### Cenário 3: Nível de Ruído 100% (Vermelho - Alerta Crítico / Risco Alto)
+Em situações de ruído elevado (superior a 80%, ex: 100% ou acima de 100 dB), a fita de LEDs assume a cor **vermelha**, sinalizando poluição sonora crítica e perigo à saúde auditiva.
+![Simulação Ruído Crítico - Vermelho](imagens/simulacao_nivel_ruido_100_vermelho.png)
 
 ---
 

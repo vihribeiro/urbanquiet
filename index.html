@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UrbanQuiet - Painel de Controle e Monitoramento Acústico</title>
+    <!-- Google Font: Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Paho MQTT Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #080c14;
+            --card-bg: rgba(17, 24, 39, 0.6);
+            --card-border: rgba(255, 255, 255, 0.07);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --verde: #10b981;
+            --verde-glow: rgba(16, 185, 129, 0.2);
+            --amarelo: #f59e0b;
+            --amarelo-glow: rgba(245, 158, 11, 0.2);
+            --vermelho: #ef4444;
+            --vermelho-glow: rgba(239, 68, 68, 0.2);
+            --primary: #3b82f6;
+            --primary-glow: rgba(59, 130, 246, 0.3);
+            --accent: #8b5cf6;
+            --accent-glow: rgba(139, 92, 246, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 10% 20%, rgba(59, 130, 246, 0.05) 0px, transparent 50%),
+                radial-gradient(at 90% 80%, rgba(139, 92, 246, 0.05) 0px, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            background: rgba(17, 24, 39, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            gap: 1rem;
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .header-title p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 0.2rem;
+        }
+
+        .status-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .status-badge::before {
+            content: "";
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .connected {
+            color: var(--verde);
+            background: var(--verde-glow);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .connected::before {
+            background-color: var(--verde);
+            box-shadow: 0 0 8px var(--verde);
+        }
+
+        .disconnected {
+            color: var(--vermelho);
+            background: var(--vermelho-glow);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .disconnected::before {
+            background-color: var(--vermelho);
+            box-shadow: 0 0 8px var(--vermelho);
+        }
+
+        .calibrating {
+            color: var(--amarelo);
+            background: var(--amarelo-glow);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            animation: pulse 1.5s infinite;
+        }
+
+        .calibrating::before {
+            background-color: var(--amarelo);
+            box-shadow: 0 0 8px var(--amarelo);
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        /* Grid de Informações Rápidas */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 600;
+        }
+
+        .card-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            display: flex;
+            align-items: baseline;
+            gap: 0.25rem;
+        }
+
+        .card-value span.unit {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        /* Detalhes de Risco */
+        .risk-details {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Barra de progresso melhorada */
+        .progress-container {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 9999px;
+            height: 10px;
+            width: 100%;
+            margin-top: 1rem;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            border-radius: 9999px;
+            background: linear-gradient(90deg, var(--verde), var(--amarelo));
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.4s ease;
+        }
+
+        /* Layout dos Gráficos */
+        .visualization-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .visualization-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-card {
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-container {
+            flex-grow: 1;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 250px;
+        }
+
+        /* Painel de Resultados Acadêmicos */
+        .latency-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background: rgba(17, 24, 39, 0.4);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+        }
+
+        .latency-title-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 1rem;
+        }
+
+        .latency-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 12px var(--primary-glow);
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px var(--primary-glow);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: none;
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: var(--vermelho);
+            box-shadow: none;
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.2);
+            box-shadow: 0 6px 16px var(--vermelho-glow);
+        }
+
+        /* Tabelas de Resultados */
+        .tables-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .tables-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .table-wrapper {
+            background: rgba(15, 23, 42, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .table-title {
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            text-align: left;
+        }
+
+        th {
+            padding: 0.75rem 1rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .row-average {
+            font-weight: 700;
+            background: rgba(59, 130, 246, 0.05);
+            color: var(--text-main);
+        }
+
+        .row-average td {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .badge-number {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        /* Terminal Logs */
+        .terminal-card {
+            flex-grow: 1;
+        }
+
+        .terminal {
+            background-color: #030712;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1rem;
+            font-family: 'Courier New', Courier, monospace;
+            height: 180px;
+            overflow-y: auto;
+            color: #38bdf8;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8);
+            font-size: 0.85rem;
+        }
+
+        .terminal-line {
+            margin-bottom: 0.3rem;
+            line-height: 1.4;
+        }
+
+        .terminal-line.info { color: #38bdf8; }
+        .terminal-line.success { color: var(--verde); }
+        .terminal-line.warn { color: var(--amarelo); }
+        .terminal-line.error { color: var(--vermelho); }
+        .terminal-line.latency { color: #c084fc; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="header-title">
+            <h1>UrbanQuiet 📊</h1>
+            <p>Monitoramento Acústico de IoT em Tempo Real & Análise de Latência</p>
+        </div>
+        <div class="status-container">
+            <div id="calib-status" class="status-badge disconnected">Não Calibrado</div>
+            <div id="conexao-status" class="status-badge disconnected">Desconectado do Broker</div>
+        </div>
+    </header>
+
+    <main class="dashboard-grid">
+        <!-- Card 1: Intensidade de Som -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Intensidade de Ruído</div>
+                <span id="badge-tipo-som" class="risk-badge" style="background: rgba(148, 163, 184, 0.15); color: var(--text-muted);">Aguardando...</span>
+            </div>
+            <div>
+                <div class="card-value">
+                    <span id="txt-porcentagem">0</span><span class="unit">%</span>
+                    <span style="font-size: 1.3rem; margin-left: 0.5rem; color: var(--text-muted); font-weight: 500;">
+                        ≈ <span id="txt-db">--</span> <span class="unit">dB</span>
+                    </span>
+                </div>
+                <div class="progress-container">
+                    <div id="barra-progresso" class="progress-bar"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Impactos na Saúde -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Efeitos na Saúde (OMS)</div>
+                <span id="limite-exposicao" class="risk-badge" style="background: rgba(148, 163, 184, 0.15); color: var(--text-muted);">Indeterminado</span>
+            </div>
+            <div>
+                <div id="saude-efeito" style="font-size: 1.05rem; font-weight: 600; color: #f8fafc; margin-bottom: 0.25rem;">Aguardando leitura do sensor...</div>
+                <p id="saude-detalhe" style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.4;">Assim que os dados do broker MQTT forem recebidos, a classificação de risco auditivo será exibida.</p>
+            </div>
+        </div>
+
+        <!-- Card 3: Estatísticas de Conexão -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Calibração Temporal</div>
+                <button onclick="iniciarCalibracao()" class="btn btn-secondary" style="padding: 0.3rem 0.7rem; font-size: 0.75rem;">Calibrar Agora</button>
+            </div>
+            <div>
+                <div style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.9rem;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-muted);">Offset Estimado:</span>
+                        <span id="txt-offset" style="font-weight: 600;">Aguardando Calibração</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-muted);">Tempo de RTT (Médio):</span>
+                        <span id="txt-rtt" style="font-weight: 600;">-- ms</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-muted);">Sincronização:</span>
+                        <span id="txt-sinc-status" style="font-weight: 600; color: var(--vermelho);">Inativa</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Seção de Gráficos de Monitoramento -->
+    <section class="visualization-section">
+        <!-- Gráfico do Ruído em Tempo Real -->
+        <div class="card chart-card">
+            <div class="card-header">
+                <div class="card-title">Gráfico do Monitor Acústico (Tempo Real)</div>
+            </div>
+            <div class="chart-container">
+                <canvas id="chart-ruido"></canvas>
+            </div>
+        </div>
+
+        <!-- Gráfico de Latência dos Resultados -->
+        <div class="card chart-card">
+            <div class="card-header">
+                <div class="card-title">Gráfico de Latências (Item 7 - Artigo)</div>
+            </div>
+            <div class="chart-container">
+                <canvas id="chart-latencia"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção de Latência e Performance (Item 7) -->
+    <section class="latency-section">
+        <div class="latency-title-area">
+            <div>
+                <h3 style="font-size: 1.1rem; font-weight: 700;">Resultados de Latência (Hardware & Broker MQTT)</h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.1rem;">Valores calculados em tempo real a partir de dados reais com timestamps do ESP32.</p>
+            </div>
+            <div class="latency-actions">
+                <button id="btn-comando" onclick="enviarComandoAtuador()" class="btn" disabled>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 10h-1.26c-.76 0-1.42-.51-1.61-1.25a6.003 6.003 0 0 0-11 3A6 6 0 0 0 6 24h12a6 6 0 0 0 0-12z"/><path d="M12 2v6M12 8l-3-3M12 8l3-3"/></svg>
+                    Acionar Atuador
+                </button>
+                <button onclick="resetarMedicoes()" class="btn btn-secondary btn-danger">
+                    Limpar Medições
+                </button>
+            </div>
+        </div>
+
+        <div class="tables-container">
+            <!-- Tabela de Latência do Sensor -->
+            <div class="table-wrapper">
+                <div class="table-title">
+                    <span>Métricas do Sensor (Detecção -> MQTT)</span>
+                    <span style="color: var(--verde); font-size: 0.75rem;">Captação Automática</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Medição</th>
+                            <th>Captura (ESP32)</th>
+                            <th>Recepção (MQTT)</th>
+                            <th>Latência (ms)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sensor-tbody">
+                        <tr>
+                            <td><span class="badge-number">#1</span></td>
+                            <td class="cell-sensor-esp">--</td>
+                            <td class="cell-sensor-rec">--</td>
+                            <td class="cell-sensor-lat" style="font-weight: 600;">--</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge-number">#2</span></td>
+                            <td class="cell-sensor-esp">--</td>
+                            <td class="cell-sensor-rec">--</td>
+                            <td class="cell-sensor-lat" style="font-weight: 600;">--</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge-number">#3</span></td>
+                            <td class="cell-sensor-esp">--</td>
+                            <td class="cell-sensor-rec">--</td>
+                            <td class="cell-sensor-lat" style="font-weight: 600;">--</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge-number">#4</span></td>
+                            <td class="cell-sensor-esp">--</td>
+                            <td class="cell-sensor-rec">--</td>
+                            <td class="cell-sensor-lat" style="font-weight: 600;">--</td>
+                        </tr>
+                        <tr class="row-average">
+                            <td>Média</td>
+                            <td colspan="2">-</td>
+                            <td id="avg-sensor-lat">-- ms</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Tabela de Latência do Atuador -->
+            <div class="table-wrapper">
+                <div class="table-title">
+                    <span>Métricas do Atuador (Comando -> Ação)</span>
+                    <span style="color: var(--accent); font-size: 0.75rem;">Disparo por Botão</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Medição</th>
+                            <th>Disparo (Browser)</th>
+                            <th>Ação (ESP32)</th>
+                            <th>Latência (ms)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="atuador-tbody">
+                        <tr>
+                            <td><span class="badge-number">#1</span></td>
+                            <td class="cell-act-send">--</td>
+                            <td class="cell-act-esp">--</td>
+                            <td class="cell-act-lat" style="font-weight: 600;">--</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge-number">#2</span></td>
+                            <td class="cell-act-send">--</td>
+                            <td class="cell-act-esp">--</td>
+                            <td class="cell-act-lat" style="font-weight: 600;">--</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge-number">#3</span></td>
+                            <td class="cell-act-send">--</td>
+                            <td class="cell-act-esp">--</td>
+                            <td class="cell-act-lat" style="font-weight: 600;">--</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge-number">#4</span></td>
+                            <td class="cell-act-send">--</td>
+                            <td class="cell-act-esp">--</td>
+                            <td class="cell-act-lat" style="font-weight: 600;">--</td>
+                        </tr>
+                        <tr class="row-average">
+                            <td>Média</td>
+                            <td colspan="2">-</td>
+                            <td id="avg-atuador-lat">-- ms</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Terminal de Logs Embutido -->
+    <div class="card terminal-card">
+        <div class="card-header">
+            <div class="card-title">Console de Monitoramento MQTT (Logs)</div>
+        </div>
+        <div id="terminal-log" class="terminal">
+            <div class="terminal-line info">> Sistema iniciado. Aguardando conexão...</div>
+        </div>
+    </div>
+
+    <script>
+        // --- Configurações de Conexão MQTT ---
+        const brokerHost = "broker.hivemq.com";
+        const brokerPort = 8000;
+        
+        // Canais
+        const topicRuido = "urbanquiet/ruido";
+        const topicPing = "urbanquiet/ping";
+        const topicPong = "urbanquiet/pong";
+        const topicComando = "urbanquiet/comando";
+        const topicConfirmacao = "urbanquiet/confirmacao";
+
+        // Identificação
+        const clientId = "UrbanQuiet_Web_" + Math.floor(Math.random() * 10000);
+        const client = new Paho.MQTT.Client(brokerHost, brokerPort, clientId);
+
+        // --- Estado do Sistema ---
+        let timeOffset = 0;
+        let isCalibrated = false;
+        let rttSamples = [];
+        let calibrationPings = [];
+        let calibrationCount = 0;
+
+        let sensorMeasurements = [];
+        let actuatorMeasurements = [];
+        let lastCommandSentTime = 0;
+
+        // --- Configuração dos Gráficos com Chart.js ---
+        // 1. Gráfico de Ruído
+        const ctxRuido = document.getElementById('chart-ruido').getContext('2d');
+        const gradRuido = ctxRuido.createLinearGradient(0, 0, 0, 300);
+        gradRuido.addColorStop(0, 'rgba(239, 68, 68, 0.45)');  // Vermelho
+        gradRuido.addColorStop(0.5, 'rgba(245, 158, 11, 0.25)'); // Amarelo
+        gradRuido.addColorStop(1, 'rgba(16, 185, 129, 0.05)');  // Verde
+
+        const chartRuido = new Chart(ctxRuido, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Nível de Ruído (%)',
+                    data: [],
+                    borderColor: '#3b82f6',
+                    backgroundColor: gradRuido,
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 2.5,
+                    pointRadius: 2,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: '#60a5fa'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: { color: 'rgba(255, 255, 255, 0.04)' },
+                        ticks: { color: '#64748b', font: { family: 'Outfit' } }
+                    },
+                    y: {
+                        min: 0,
+                        max: 100,
+                        grid: { color: 'rgba(255, 255, 255, 0.04)' },
+                        ticks: { color: '#64748b', font: { family: 'Outfit' } }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // 2. Gráfico de Latência dos Resultados
+        const ctxLatencia = document.getElementById('chart-latencia').getContext('2d');
+        const chartLatencia = new Chart(ctxLatencia, {
+            type: 'bar',
+            data: {
+                labels: ['Run 1', 'Run 2', 'Run 3', 'Run 4', 'Média'],
+                datasets: [
+                    {
+                        label: 'Sensor -> MQTT',
+                        data: [null, null, null, null, null],
+                        backgroundColor: 'rgba(16, 185, 129, 0.6)',
+                        borderColor: 'var(--verde)',
+                        borderWidth: 1.5,
+                        borderRadius: 6
+                    },
+                    {
+                        label: 'Comando -> Atuador',
+                        data: [null, null, null, null, null],
+                        backgroundColor: 'rgba(139, 92, 246, 0.6)',
+                        borderColor: 'var(--accent)',
+                        borderWidth: 1.5,
+                        borderRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: { color: 'rgba(255, 255, 255, 0.04)' },
+                        ticks: { color: '#64748b', font: { family: 'Outfit' } }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255, 255, 255, 0.04)' },
+                        ticks: { color: '#64748b', font: { family: 'Outfit' } },
+                        title: {
+                            display: true,
+                            text: 'Latência (ms)',
+                            color: '#94a3b8',
+                            font: { family: 'Outfit', size: 10 }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#f8fafc', font: { family: 'Outfit', size: 11 } }
+                    }
+                }
+            }
+        });
+
+        // --- Ciclo de Vida da Conexão MQTT ---
+        client.onConnectionLost = onConnectionLost;
+        client.onMessageArrived = onMessageArrived;
+
+        client.connect({
+            onSuccess: onConnect,
+            onFailure: onFailure,
+            useSSL: false
+        });
+
+        function onConnect() {
+            logNoTerminal("Conectado ao HiveMQ via WebSockets!", "success");
+            const statusBadge = document.getElementById("conexao-status");
+            statusBadge.innerText = "Broker Online";
+            statusBadge.className = "status-badge connected";
+
+            // Subscrever tópicos
+            client.subscribe(topicRuido);
+            client.subscribe(topicPong);
+            client.subscribe(topicConfirmacao);
+            logNoTerminal("Assinado nos canais do UrbanQuiet.", "info");
+
+            // Aciona calibração automática de tempo
+            setTimeout(iniciarCalibracao, 1000);
+        }
+
+        function onFailure(response) {
+            logNoTerminal("Falha de conexão com o broker: " + response.errorMessage, "error");
+        }
+
+        function onConnectionLost(responseObject) {
+            if (responseObject.errorCode !== 0) {
+                const statusBadge = document.getElementById("conexao-status");
+                statusBadge.innerText = "Desconectado";
+                statusBadge.className = "status-badge disconnected";
+                
+                const calibBadge = document.getElementById("calib-status");
+                calibBadge.innerText = "Não Calibrado";
+                calibBadge.className = "status-badge disconnected";
+                
+                document.getElementById("btn-comando").disabled = true;
+                isCalibrated = false;
+                
+                logNoTerminal("Conexão com o broker perdida: " + responseObject.errorMessage, "error");
+            }
+        }
+
+        // --- Algoritmo de Calibração de Tempo (Ping-Pong) ---
+        function iniciarCalibracao() {
+            const calibBadge = document.getElementById("calib-status");
+            calibBadge.innerText = "Calibrando...";
+            calibBadge.className = "status-badge calibrating";
+            
+            document.getElementById("txt-sinc-status").innerText = "Sincronizando...";
+            document.getElementById("txt-sinc-status").style.color = "var(--amarelo)";
+
+            calibrationCount = 0;
+            calibrationPings = [];
+            rttSamples = [];
+            
+            enviarPingCalibracao();
+        }
+
+        function enviarPingCalibracao() {
+            if (calibrationCount < 4) {
+                const now = Date.now();
+                calibrationPings.push(now);
+                
+                const message = new Paho.MQTT.Message(String(now));
+                message.destinationName = topicPing;
+                client.send(message);
+                
+                logNoTerminal(`Sinal de calibração enviado (${calibrationCount + 1}/4)`, "info");
+                calibrationCount++;
+            } else {
+                finalizarCalibracao();
+            }
+        }
+
+        function finalizarCalibracao() {
+            if (calibrationPings.length > 0 && rttSamples.length > 0) {
+                // Cálculo das médias dos offsets e RTT
+                const sumOffset = rttSamples.reduce((acc, sample) => acc + sample.offset, 0);
+                const sumRtt = rttSamples.reduce((acc, sample) => acc + sample.rtt, 0);
+                
+                timeOffset = sumOffset / rttSamples.length;
+                const avgRtt = sumRtt / rttSamples.length;
+
+                isCalibrated = true;
+
+                // Interface
+                const calibBadge = document.getElementById("calib-status");
+                calibBadge.innerText = "Calibrado";
+                calibBadge.className = "status-badge connected";
+
+                document.getElementById("txt-offset").innerText = Math.round(timeOffset) + " ms";
+                document.getElementById("txt-rtt").innerText = Math.round(avgRtt) + " ms";
+                
+                const sincStatus = document.getElementById("txt-sinc-status");
+                sincStatus.innerText = "Ativa (RTT/2)";
+                sincStatus.style.color = "var(--verde)";
+
+                document.getElementById("btn-comando").disabled = false;
+
+                logNoTerminal(`Calibração concluída! Offset médio: ${Math.round(timeOffset)}ms. RTT médio: ${Math.round(avgRtt)}ms.`, "success");
+            } else {
+                logNoTerminal("Erro na calibração: ESP32 não respondeu. Certifique-se de que o hardware está ativo e conectado.", "error");
+                
+                const calibBadge = document.getElementById("calib-status");
+                calibBadge.innerText = "Falha";
+                calibBadge.className = "status-badge disconnected";
+                
+                document.getElementById("txt-sinc-status").innerText = "Falha no hardware";
+                document.getElementById("txt-sinc-status").style.color = "var(--vermelho)";
+            }
+        }
+
+        // --- Processamento de Mensagens Recebidas ---
+        function onMessageArrived(message) {
+            const topic = message.destinationName;
+            const payload = message.payloadString;
+
+            // 1. Canal do Sensor de Ruído
+            if (topic === topicRuido) {
+                processarRuido(payload);
+            } 
+            // 2. Resposta de Calibração (Pong)
+            else if (topic === topicPong) {
+                const now = Date.now();
+                const partes = payload.split(",");
+                if (partes.length === 2) {
+                    const t0 = parseInt(partes[0]);
+                    const t_esp = parseInt(partes[1]);
+                    
+                    const rtt = now - t0;
+                    // Cálculo clássico do offset de tempo do NTP
+                    const offset = (t0 + rtt / 2) - t_esp;
+
+                    rttSamples.push({ rtt, offset });
+                    logNoTerminal(`Pong recebido. RTT: ${rtt}ms. Offset local calculado: ${Math.round(offset)}ms`, "latency");
+                    
+                    // Dispara o próximo ping após um breve delay
+                    setTimeout(enviarPingCalibracao, 250);
+                }
+            } 
+            // 3. Confirmação do Atuador
+            else if (topic === topicConfirmacao) {
+                const now = Date.now();
+                const partes = payload.split(",");
+                if (partes.length === 2) {
+                    const t0 = parseInt(partes[0]);
+                    const t_act_esp = parseInt(partes[1]);
+                    
+                    // Somente processa se o t0 corresponder ao nosso comando
+                    if (t0 === lastCommandSentTime) {
+                        processarConfirmacaoAtuador(t0, t_act_esp, now);
+                    }
+                }
+            }
+        }
+
+        // --- Processamento e Exposição das Métricas de Ruído ---
+        function processarRuido(payloadRaw) {
+            let ruidoPct = 0;
+            let statusTxt = "Aguardando...";
+            let t_esp = 0;
+            const now = Date.now();
+
+            try {
+                if (payloadRaw.startsWith("{")) {
+                    const dados = JSON.parse(payloadRaw);
+                    ruidoPct = dados.ruido;
+                    statusTxt = dados.status;
+                    t_esp = dados.t_esp;
+                } else {
+                    // Fallback para string formatada
+                    const regexPct = /\((\d+)%\)/;
+                    const match = payloadRaw.match(regexPct);
+                    ruidoPct = match ? parseInt(match[1]) : 0;
+
+                    statusTxt = "Som Ambiente";
+                    if (payloadRaw.includes("Limite")) statusTxt = "Som Limite";
+                    if (payloadRaw.includes("Alto")) statusTxt = "Ruído Alto";
+                    t_esp = 0;
+                }
+
+                // Equivalência em decibéis baseada na física do sensor
+                const db = Math.round(30 + (ruidoPct * 0.9));
+
+                // Atualiza painel principal
+                atualizarPainel(ruidoPct, statusTxt, db);
+
+                // Adiciona dado ao gráfico em tempo real
+                adicionarAoGraficoRuido(ruidoPct);
+
+                // Cálculo automático de latência de sensor (se calibrado e se houver t_esp)
+                if (isCalibrated && t_esp > 0) {
+                    const t_detecao_real = t_esp + timeOffset;
+                    let lat = now - t_detecao_real;
+                    
+                    // Proteção contra oscilação estocástica negativa
+                    if (lat < 0) lat = 0;
+
+                    registrarLatenciaSensor(t_detecao_real, now, lat);
+                }
+
+            } catch (e) {
+                console.error("Erro no processamento do ruído", e);
+            }
+        }
+
+        function atualizarPainel(porcentagem, status, db) {
+            document.getElementById("txt-porcentagem").innerText = porcentagem;
+            document.getElementById("txt-db").innerText = db;
+            
+            const txtSomBadge = document.getElementById("badge-tipo-som");
+            const barraProgresso = document.getElementById("barra-progresso");
+            
+            txtSomBadge.innerText = status;
+            barraProgresso.style.width = porcentagem + "%";
+
+            // Classificação da OMS e atualizações dinâmicas de estilo
+            const saudeEfeito = document.getElementById("saude-efeito");
+            const saudeDetalhe = document.getElementById("saude-detalhe");
+            const limiteExposicao = document.getElementById("limite-exposicao");
+
+            let corVar = "var(--verde)";
+            let corGlow = "var(--verde-glow)";
+            
+            if (db <= 55) {
+                // Seguro
+                txtSomBadge.style.background = "var(--verde-glow)";
+                txtSomBadge.style.color = "var(--verde)";
+                barraProgresso.style.background = "linear-gradient(90deg, var(--verde), #34d399)";
+                
+                saudeEfeito.innerText = "Excelente / Conforto Acústico";
+                saudeEfeito.style.color = "var(--verde)";
+                saudeDetalhe.innerText = "Som seguro. Ambientes abaixo de 55 dB não provocam reações adversas e são ideais para concentração e descanso.";
+                limiteExposicao.innerText = "Seguro (Sem limites)";
+                limiteExposicao.style.background = "var(--verde-glow)";
+                limiteExposicao.style.color = "var(--verde)";
+            } 
+            else if (db <= 75) {
+                // Moderado
+                corVar = "var(--amarelo)";
+                corGlow = "var(--amarelo-glow)";
+                txtSomBadge.style.background = corGlow;
+                txtSomBadge.style.color = corVar;
+                barraProgresso.style.background = "linear-gradient(90deg, var(--verde), var(--amarelo))";
+                
+                saudeEfeito.innerText = "Nível Moderado / Estresse Leve";
+                saudeEfeito.style.color = corVar;
+                saudeDetalhe.innerText = "Pode causar fadiga leve, estresse de foco e interferir em comunicações claras. Períodos longos exigem atenção.";
+                limiteExposicao.innerText = "Recomendável Máx: 8h";
+                limiteExposicao.style.background = corGlow;
+                limiteExposicao.style.color = corVar;
+            } 
+            else if (db <= 85) {
+                // Limite de risco
+                corVar = "#f97316"; // Laranja
+                corGlow = "rgba(249, 115, 22, 0.2)";
+                txtSomBadge.style.background = corGlow;
+                txtSomBadge.style.color = corVar;
+                barraProgresso.style.background = "linear-gradient(90deg, var(--amarelo), #f97316)";
+
+                saudeEfeito.innerText = "Estresse Acústico / Limiar de Risco";
+                saudeEfeito.style.color = corVar;
+                saudeDetalhe.innerText = "Nível considerado nocivo à saúde segundo a OMS. Exposição contínua sem proteção pode iniciar lesões auditivas leves a médio prazo.";
+                limiteExposicao.innerText = "Máximo Limite: 4h";
+                limiteExposicao.style.background = corGlow;
+                limiteExposicao.style.color = corVar;
+            }
+            else {
+                // Perigo Crítico
+                corVar = "var(--vermelho)";
+                corGlow = "var(--vermelho-glow)";
+                txtSomBadge.style.background = corGlow;
+                txtSomBadge.style.color = corVar;
+                barraProgresso.style.background = "linear-gradient(90deg, #f97316, var(--vermelho))";
+
+                saudeEfeito.innerText = "Risco Crítico / Poluição Sonora Grave";
+                saudeEfeito.style.color = corVar;
+                saudeDetalhe.innerText = "ALERTA: Risco imediato e cumulativo de perda auditiva permanente, insônia crônica e distúrbios cardiovasculares graves.";
+                limiteExposicao.innerText = "Uso de Protetor Obrigatório";
+                limiteExposicao.style.background = corGlow;
+                limiteExposicao.style.color = corVar;
+            }
+        }
+
+        function adicionarAoGraficoRuido(valor) {
+            const timestamp = new Date().toLocaleTimeString();
+            chartRuido.data.labels.push(timestamp);
+            chartRuido.data.datasets[0].data.push(valor);
+
+            // Mantém apenas os últimos 25 dados para rolar a tela fluidamente
+            if (chartRuido.data.labels.length > 25) {
+                chartRuido.data.labels.shift();
+                chartRuido.data.datasets[0].data.shift();
+            }
+
+            chartRuido.update('none'); // Update sem animação lenta para performance
+        }
+
+        // --- Registro e Lógica de Resultados de Latência ---
+        function registrarLatenciaSensor(t_det, t_rec, lat) {
+            // Registra até 4 amostras sequenciais após cada clique ou conexão
+            if (sensorMeasurements.length < 4) {
+                const item = {
+                    id: sensorMeasurements.length + 1,
+                    t_det: new Date(t_det).toLocaleTimeString() + "." + String(t_det % 1000).padStart(3, '0'),
+                    t_rec: new Date(t_rec).toLocaleTimeString() + "." + String(t_rec % 1000).padStart(3, '0'),
+                    lat: lat
+                };
+                sensorMeasurements.push(item);
+                logNoTerminal(`Amostra de latência do Sensor #${item.id} gravada: ${lat}ms`, "success");
+                atualizarTabelasEInterface();
+            }
+        }
+
+        function enviarComandoAtuador() {
+            if (!isCalibrated) {
+                logNoTerminal("Alerta: Faça a calibração de tempo antes de disparar o comando.", "warn");
+                return;
+            }
+
+            lastCommandSentTime = Date.now();
+            
+            const message = new Paho.MQTT.Message(String(lastCommandSentTime));
+            message.destinationName = topicComando;
+            client.send(message);
+            
+            logNoTerminal(`Comando enviado ao Atuador às ${new Date(lastCommandSentTime).toLocaleTimeString()}.${String(lastCommandSentTime % 1000).padStart(3, '0')}. Aguardando resposta de confirmação...`, "info");
+        }
+
+        function processarConfirmacaoAtuador(t0, t_act_esp, now) {
+            if (actuatorMeasurements.length < 4) {
+                const t_action_real = t_act_esp + timeOffset;
+                let lat = t_action_real - t0;
+
+                // Proteção matemática contra atrasos mínimos ou oscilação de offset
+                if (lat < 0) lat = 0;
+
+                const item = {
+                    id: actuatorMeasurements.length + 1,
+                    t_send: new Date(t0).toLocaleTimeString() + "." + String(t0 % 1000).padStart(3, '0'),
+                    t_act: new Date(t_action_real).toLocaleTimeString() + "." + String(t_action_real % 1000).padStart(3, '0'),
+                    lat: lat
+                };
+                actuatorMeasurements.push(item);
+                logNoTerminal(`Amostra de latência do Atuador #${item.id} gravada: ${lat}ms (RTT Comando-Ação completo: ${now - t0}ms)`, "success");
+                atualizarTabelasEInterface();
+            } else {
+                logNoTerminal("Limite de 4 medições do Atuador atingido. Limpe as tabelas para testar novamente.", "warn");
+            }
+        }
+
+        function atualizarTabelasEInterface() {
+            // Atualizar tabela do Sensor
+            const sRows = document.getElementById("sensor-tbody").getElementsByTagName("tr");
+            let sumSensor = 0;
+            
+            for (let i = 0; i < 4; i++) {
+                const cells = sRows[i].getElementsByTagName("td");
+                if (i < sensorMeasurements.length) {
+                    const data = sensorMeasurements[i];
+                    cells[1].innerText = data.t_det;
+                    cells[2].innerText = data.t_rec;
+                    cells[3].innerText = data.lat + " ms";
+                    sumSensor += data.lat;
+                } else {
+                    cells[1].innerText = "--";
+                    cells[2].innerText = "--";
+                    cells[3].innerText = "--";
+                }
+            }
+
+            const avgSensor = sensorMeasurements.length > 0 ? Math.round(sumSensor / sensorMeasurements.length) : null;
+            document.getElementById("avg-sensor-lat").innerText = avgSensor !== null ? avgSensor + " ms" : "-- ms";
+
+            // Atualizar tabela do Atuador
+            const aRows = document.getElementById("atuador-tbody").getElementsByTagName("tr");
+            let sumActuator = 0;
+
+            for (let i = 0; i < 4; i++) {
+                const cells = aRows[i].getElementsByTagName("td");
+                if (i < actuatorMeasurements.length) {
+                    const data = actuatorMeasurements[i];
+                    cells[1].innerText = data.t_send;
+                    cells[2].innerText = data.t_act;
+                    cells[3].innerText = data.lat + " ms";
+                    sumActuator += data.lat;
+                } else {
+                    cells[1].innerText = "--";
+                    cells[2].innerText = "--";
+                    cells[3].innerText = "--";
+                }
+            }
+
+            const avgActuator = actuatorMeasurements.length > 0 ? Math.round(sumActuator / actuatorMeasurements.length) : null;
+            document.getElementById("avg-atuador-lat").innerText = avgActuator !== null ? avgActuator + " ms" : "-- ms";
+
+            // Atualizar o Gráfico de Latências
+            for (let i = 0; i < 4; i++) {
+                chartLatencia.data.datasets[0].data[i] = i < sensorMeasurements.length ? sensorMeasurements[i].lat : null;
+                chartLatencia.data.datasets[1].data[i] = i < actuatorMeasurements.length ? actuatorMeasurements[i].lat : null;
+            }
+            // Médias
+            chartLatencia.data.datasets[0].data[4] = avgSensor;
+            chartLatencia.data.datasets[1].data[4] = avgActuator;
+            
+            chartLatencia.update();
+        }
+
+        function resetarMedicoes() {
+            sensorMeasurements = [];
+            actuatorMeasurements = [];
+            atualizarTabelasEInterface();
+            logNoTerminal("Medições resetadas com sucesso. Pronto para nova coleta.", "info");
+        }
+
+        // --- Terminal Helper ---
+        function logNoTerminal(texto, tipo = "info") {
+            const terminal = document.getElementById("terminal-log");
+            const timestamp = new Date().toLocaleTimeString();
+            terminal.innerHTML += `<div class="terminal-line ${tipo}">[${timestamp}] > ${texto}</div>`;
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+    </script>
+</body>
+
+</html>

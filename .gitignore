@@ -1,0 +1,4 @@
+# Ignorar arquivos acadêmicos locais e do sistema
+criterios.md
+Artigo projeto Objetos Inteligentes 3.pdf
+.DS_Store

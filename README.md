@@ -143,7 +143,18 @@ Em situações de ruído elevado (superior a 80%, ex: 100% ou acima de 100 dB), 
 
 ---
 
-## 7. Instruções de Reprodução e Execução
+## 7. Vídeo de Apresentação e Demonstração
+
+Assista à apresentação completa do projeto, com explicações sobre o conceito, o circuito simulado no Wokwi e a demonstração prática do dashboard web no YouTube:
+
+[![Vídeo de Apresentação do UrbanQuiet](https://img.youtube.com/vi/VgzfqdxcMQw/0.jpg)](https://youtu.be/VgzfqdxcMQw)
+
+> [!NOTE]
+> Clique na imagem acima ou utilize o link direto para assistir: [Apresentação do Projeto UrbanQuiet no YouTube](https://youtu.be/VgzfqdxcMQw).
+
+---
+
+## 8. Instruções de Reprodução e Execução
 
 ### Pré-requisitos de Software
 1. **Arduino IDE** (v1.8 ou superior).
@@ -169,3 +180,15 @@ Em situações de ruído elevado (superior a 80%, ex: 100% ou acima de 100 dB), 
 1. Deixe o ESP32 rodar. As primeiras 4 mensagens enviadas por ele serão capturadas automaticamente pela dashboard e preencherão a **Tabela de Latência do Sensor**. O tempo médio será calculado e o gráfico de barras atualizará.
 2. Pressione o botão **"Acionar Atuador"** na dashboard por 4 vezes para preencher a **Tabela de Latência do Atuador** e registrar o comportamento no gráfico de barras.
 3. Você pode capturar a tela das tabelas e do gráfico gerado diretamente para usar no capítulo de Resultados do seu artigo.
+
+---
+
+## 👥 Integrantes do Grupo e Autores
+
+Este projeto foi concebido e implementado pelos seguintes integrantes, como parte do artigo científico desenvolvido para a Faculdade de Computação e Informática (FCI) da Universidade Presbiteriana Mackenzie:
+
+* **Anny Violeta Rodrigues Freire**
+* **Guilherme Henrique Ferraz Contrera**
+* **Vinicius Santos Ribeiro**
+* **Andre Luiz de Oliveira**
+* **Leandro Carlos Fernandes**

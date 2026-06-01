@@ -190,5 +190,3 @@ Este projeto foi concebido e implementado pelos seguintes integrantes, como part
 * **Anny Violeta Rodrigues Freire**
 * **Guilherme Henrique Ferraz Contrera**
 * **Vinicius Santos Ribeiro**
-* **Andre Luiz de Oliveira**
-* **Leandro Carlos Fernandes**

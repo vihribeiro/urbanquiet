@@ -14,21 +14,21 @@
 
     <style>
         :root {
-            --bg-color: #080c14;
-            --card-bg: rgba(17, 24, 39, 0.6);
-            --card-border: rgba(255, 255, 255, 0.07);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --verde: #10b981;
-            --verde-glow: rgba(16, 185, 129, 0.2);
-            --amarelo: #f59e0b;
-            --amarelo-glow: rgba(245, 158, 11, 0.2);
-            --vermelho: #ef4444;
-            --vermelho-glow: rgba(239, 68, 68, 0.2);
-            --primary: #3b82f6;
-            --primary-glow: rgba(59, 130, 246, 0.3);
-            --accent: #8b5cf6;
-            --accent-glow: rgba(139, 92, 246, 0.3);
+            --bg-color: #05070c;
+            --card-bg: rgba(13, 17, 28, 0.75);
+            --card-border: rgba(255, 255, 255, 0.05);
+            --text-main: #f1f5f9;
+            --text-muted: #64748b;
+            --verde: #00e676; /* Neon Mint Green */
+            --verde-glow: rgba(0, 230, 118, 0.15);
+            --amarelo: #ffd600; /* Neon Gold */
+            --amarelo-glow: rgba(255, 214, 0, 0.15);
+            --vermelho: #ff1744; /* Neon Rose Red */
+            --vermelho-glow: rgba(255, 23, 68, 0.15);
+            --primary: #00b0ff; /* Electric Light Blue */
+            --primary-glow: rgba(0, 176, 255, 0.2);
+            --accent: #d500f9; /* Vibrant Purple */
+            --accent-glow: rgba(213, 0, 249, 0.2);
         }
 
         * {
@@ -41,105 +41,106 @@
         body {
             background-color: var(--bg-color);
             background-image: 
-                radial-gradient(at 10% 20%, rgba(59, 130, 246, 0.05) 0px, transparent 50%),
-                radial-gradient(at 90% 80%, rgba(139, 92, 246, 0.05) 0px, transparent 50%);
+                radial-gradient(at 0% 0%, rgba(0, 176, 255, 0.04) 0px, transparent 40%),
+                radial-gradient(at 100% 100%, rgba(213, 0, 249, 0.04) 0px, transparent 40%);
             color: var(--text-main);
-            min-height: 100vh;
-            padding: 1.5rem;
+            height: 100vh;
+            max-height: 100vh;
+            overflow: hidden;
+            padding: 0.75rem;
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 0.6rem;
         }
 
         header {
             display: flex;
-            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            padding: 1.5rem;
-            background: rgba(17, 24, 39, 0.4);
+            padding: 0.5rem 1rem;
+            background: rgba(10, 14, 23, 0.5);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--card-border);
-            border-radius: 16px;
-            gap: 1rem;
+            border-radius: 12px;
+            gap: 0.5rem;
         }
 
         .header-title h1 {
-            font-size: 1.8rem;
+            font-size: 1.25rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            background: linear-gradient(135deg, #00b0ff, #d500f9);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.4rem;
         }
 
         .header-title p {
             color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-top: 0.2rem;
+            font-size: 0.75rem;
+            margin-top: 0.1rem;
         }
 
         .status-container {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.5rem;
         }
 
         .status-badge {
-            padding: 0.5rem 1rem;
+            padding: 0.35rem 0.75rem;
             border-radius: 9999px;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             font-weight: 600;
-            letter-spacing: 0.02em;
+            letter-spacing: 0.01em;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.4rem;
             transition: all 0.3s ease;
         }
 
         .status-badge::before {
             content: "";
             display: inline-block;
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
         }
 
         .connected {
             color: var(--verde);
             background: var(--verde-glow);
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            border: 1px solid rgba(0, 230, 118, 0.3);
         }
 
         .connected::before {
             background-color: var(--verde);
-            box-shadow: 0 0 8px var(--verde);
+            box-shadow: 0 0 6px var(--verde);
         }
 
         .disconnected {
             color: var(--vermelho);
             background: var(--vermelho-glow);
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            border: 1px solid rgba(255, 23, 68, 0.3);
         }
 
         .disconnected::before {
             background-color: var(--vermelho);
-            box-shadow: 0 0 8px var(--vermelho);
+            box-shadow: 0 0 6px var(--vermelho);
         }
 
         .calibrating {
             color: var(--amarelo);
             background: var(--amarelo-glow);
-            border: 1px solid rgba(245, 158, 11, 0.3);
+            border: 1px solid rgba(255, 214, 0, 0.3);
             animation: pulse 1.5s infinite;
         }
 
         .calibrating::before {
             background-color: var(--amarelo);
-            box-shadow: 0 0 8px var(--amarelo);
+            box-shadow: 0 0 6px var(--amarelo);
         }
 
         @keyframes pulse {
@@ -148,27 +149,25 @@
             100% { opacity: 0.6; }
         }
 
-        /* Menu de Abas Premium */
+        /* Menu de Abas Compacto */
         .tab-container {
             display: flex;
-            gap: 1rem;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.05);
-            padding-bottom: 0.5rem;
-            margin-top: 0.5rem;
+            gap: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 0.2rem;
         }
 
         .tab-btn {
             background: transparent;
             border: none;
             color: var(--text-muted);
-            font-size: 1rem;
+            font-size: 0.85rem;
             font-weight: 600;
-            padding: 0.6rem 1.2rem;
+            padding: 0.4rem 0.9rem;
             cursor: pointer;
             position: relative;
-            transition: all 0.3s ease;
-            letter-spacing: 0.02em;
-            border-radius: 8px;
+            transition: all 0.2s ease;
+            border-radius: 6px;
         }
 
         .tab-btn:hover {
@@ -178,117 +177,110 @@
 
         .tab-btn.active {
             color: var(--primary);
-            background: rgba(59, 130, 246, 0.05);
+            background: rgba(0, 176, 255, 0.05);
         }
 
         .tab-btn.active::after {
             content: "";
             position: absolute;
-            bottom: -0.6rem;
+            bottom: -0.3rem;
             left: 0;
             width: 100%;
-            height: 3px;
+            height: 2px;
             background: linear-gradient(90deg, var(--primary), var(--accent));
             border-radius: 9999px;
-            box-shadow: 0 0 10px var(--primary-glow);
+            box-shadow: 0 0 8px var(--primary-glow);
         }
 
         .tab-content {
             display: none;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 0.6rem;
             width: 100%;
+            flex: 1;
+            min-height: 0;
         }
 
         .tab-content.active {
             display: flex;
         }
 
-        /* Grid de Informações Rápidas */
+        /* Grid de Informações Compactas */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 0.6rem;
         }
 
         .card {
             background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 1.5rem;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: center;
             position: relative;
             overflow: hidden;
-            transition: transform 0.3s ease, border-color 0.3s ease;
+            transition: transform 0.2s ease, border-color 0.2s ease;
         }
 
         .card:hover {
-            transform: translateY(-2px);
-            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+            border-color: rgba(255, 255, 255, 0.1);
         }
 
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 0.4rem;
         }
 
         .card-title {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.05em;
             font-weight: 600;
         }
 
         .card-value {
-            font-size: 2.5rem;
+            font-size: 1.8rem;
             font-weight: 800;
-            line-height: 1.2;
+            line-height: 1.1;
             display: flex;
             align-items: baseline;
-            gap: 0.25rem;
+            gap: 0.2rem;
         }
 
         .card-value span.unit {
-            font-size: 1.2rem;
+            font-size: 0.95rem;
             font-weight: 500;
             color: var(--text-muted);
         }
 
         /* Detalhes de Risco */
-        .risk-details {
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            line-height: 1.4;
-            padding-top: 0.75rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
         .risk-badge {
             display: inline-block;
-            padding: 0.2rem 0.6rem;
+            padding: 0.15rem 0.5rem;
             border-radius: 4px;
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
         }
 
-        /* Barra de progresso melhorada */
+        /* Barra de progresso compacta */
         .progress-container {
-            background-color: rgba(255, 255, 255, 0.05);
+            background-color: rgba(255, 255, 255, 0.04);
             border-radius: 9999px;
-            height: 10px;
+            height: 6px;
             width: 100%;
-            margin-top: 1rem;
+            margin-top: 0.5rem;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.03);
         }
 
         .progress-bar {
@@ -300,77 +292,67 @@
         }
 
         /* Layout dos Gráficos */
-        .visualization-section {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 1.5rem;
-        }
-
-        @media (max-width: 1024px) {
-            .visualization-section {
-                grid-template-columns: 1fr;
-            }
-        }
-
         .chart-card {
-            min-height: 350px;
+            flex: 1;
+            min-height: 0;
             display: flex;
             flex-direction: column;
         }
 
         .chart-container {
-            flex-grow: 1;
+            flex: 1;
+            min-height: 0;
             position: relative;
             width: 100%;
             height: 100%;
-            min-height: 250px;
         }
 
-        /* Painel de Resultados Acadêmicos */
+        /* Painel de Resultados Acadêmicos Compacto */
         .latency-section {
+            flex: 1.4;
+            min-height: 0;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
-            background: rgba(17, 24, 39, 0.4);
+            gap: 0.6rem;
+            background: rgba(10, 14, 23, 0.4);
             border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 1.5rem;
+            border-radius: 12px;
+            padding: 0.75rem;
         }
 
         .latency-title-area {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
+            gap: 0.5rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding-bottom: 1rem;
+            padding-bottom: 0.4rem;
         }
 
         .latency-actions {
             display: flex;
-            gap: 0.75rem;
+            gap: 0.5rem;
         }
 
         .btn {
             background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
             border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 10px;
-            font-size: 0.85rem;
+            padding: 0.4rem 0.9rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
             font-weight: 600;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 4px 12px var(--primary-glow);
+            gap: 0.4rem;
+            box-shadow: 0 2px 8px var(--primary-glow);
             transition: all 0.2s ease;
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px var(--primary-glow);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px var(--primary-glow);
         }
 
         .btn:active {
@@ -378,34 +360,37 @@
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             color: var(--text-main);
             box-shadow: none;
         }
 
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
             box-shadow: none;
         }
 
         .btn-danger {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.2);
+            background: rgba(255, 23, 68, 0.08);
+            border: 1px solid rgba(255, 23, 68, 0.15);
             color: var(--vermelho);
             box-shadow: none;
         }
 
         .btn-danger:hover {
-            background: rgba(239, 68, 68, 0.2);
-            box-shadow: 0 6px 16px var(--vermelho-glow);
+            background: rgba(255, 23, 68, 0.15);
+            box-shadow: 0 4px 12px var(--vermelho-glow);
         }
 
-        /* Tabelas de Resultados */
+        /* Tabelas de Resultados Compactas */
         .tables-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
+            gap: 0.75rem;
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
         }
 
         @media (max-width: 768px) {
@@ -415,19 +400,21 @@
         }
 
         .table-wrapper {
-            background: rgba(15, 23, 42, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
+            background: rgba(10, 14, 23, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 8px;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         .table-title {
-            padding: 0.75rem 1rem;
-            background: rgba(255, 255, 255, 0.03);
-            font-size: 0.85rem;
+            padding: 0.4rem 0.6rem;
+            background: rgba(255, 255, 255, 0.02);
+            font-size: 0.75rem;
             font-weight: 600;
             color: var(--text-muted);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -436,20 +423,20 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             text-align: left;
         }
 
         th {
-            padding: 0.75rem 1rem;
+            padding: 0.4rem 0.6rem;
             color: var(--text-muted);
             font-weight: 600;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
         }
 
         td {
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 0.4rem 0.6rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
         }
 
         tr:last-child td {
@@ -458,54 +445,56 @@
 
         .row-average {
             font-weight: 700;
-            background: rgba(59, 130, 246, 0.05);
+            background: rgba(0, 176, 255, 0.04);
             color: var(--text-main);
         }
 
         .row-average td {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 0.5rem 0.6rem;
         }
 
         .badge-number {
-            background: rgba(255, 255, 255, 0.08);
-            padding: 0.1rem 0.4rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 0.05rem 0.3rem;
+            border-radius: 3px;
+            font-size: 0.65rem;
         }
 
-        /* Terminal Logs */
+        /* Terminal Logs Compacto */
         .terminal-card {
-            flex-grow: 1;
+            flex: none;
+            height: 110px;
         }
 
         .terminal {
-            background-color: #030712;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 1rem;
+            background-color: #020306;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 8px;
+            padding: 0.5rem;
             font-family: 'Courier New', Courier, monospace;
-            height: 180px;
+            height: 75px;
             overflow-y: auto;
-            color: #38bdf8;
-            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8);
-            font-size: 0.85rem;
+            color: #00b0ff;
+            box-shadow: inset 0 1px 6px rgba(0, 0, 0, 0.9);
+            font-size: 0.75rem;
         }
 
         .terminal-line {
-            margin-bottom: 0.3rem;
-            line-height: 1.4;
+            margin-bottom: 0.2rem;
+            line-height: 1.2;
         }
 
-        .terminal-line.info { color: #38bdf8; }
+        .terminal-line.info { color: #00b0ff; }
         .terminal-line.success { color: var(--verde); }
         .terminal-line.warn { color: var(--amarelo); }
         .terminal-line.error { color: var(--vermelho); }
-        .terminal-line.latency { color: #c084fc; }
+        .terminal-line.latency { color: #d500f9; }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 4px;
+            height: 4px;
         }
 
         ::-webkit-scrollbar-track {
@@ -513,12 +502,12 @@
         }
 
         ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 2px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.15);
         }
     </style>
 </head>
@@ -554,7 +543,7 @@
                 <div>
                     <div class="card-value">
                         <span id="txt-porcentagem">0</span><span class="unit">%</span>
-                        <span style="font-size: 1.3rem; margin-left: 0.5rem; color: var(--text-muted); font-weight: 500;">
+                        <span style="font-size: 1.05rem; margin-left: 0.4rem; color: var(--text-muted); font-weight: 500;">
                             ≈ <span id="txt-db">--</span> <span class="unit">dB</span>
                         </span>
                     </div>
@@ -571,16 +560,16 @@
                     <span id="limite-exposicao" class="risk-badge" style="background: rgba(148, 163, 184, 0.15); color: var(--text-muted);">Indeterminado</span>
                 </div>
                 <div>
-                    <div id="saude-efeito" style="font-size: 1.05rem; font-weight: 600; color: #f8fafc; margin-bottom: 0.25rem;">Aguardando leitura do sensor...</div>
-                    <p id="saude-detalhe" style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.4;">Assim que os dados do broker MQTT forem recebidos, a classificação de risco auditivo será exibida.</p>
+                    <div id="saude-efeito" style="font-size: 0.9rem; font-weight: 600; color: #f8fafc; margin-bottom: 0.15rem;">Aguardando leitura...</div>
+                    <p id="saude-detalhe" style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.3;">Aguardando dados MQTT para análise...</p>
                 </div>
             </div>
         </div>
 
         <!-- Gráfico do Ruído em Tempo Real -->
         <div class="card chart-card">
-            <div class="card-header">
-                <div class="card-title">Gráfico do Monitor Acústico (Tempo Real)</div>
+            <div class="card-header" style="margin-bottom: 0.25rem;">
+                <div class="card-title" style="font-size: 0.75rem;">Gráfico do Monitor Acústico (Tempo Real)</div>
             </div>
             <div class="chart-container">
                 <canvas id="chart-ruido"></canvas>
@@ -589,8 +578,8 @@
 
         <!-- Terminal de Logs Embutido -->
         <div class="card terminal-card">
-            <div class="card-header">
-                <div class="card-title">Console de Monitoramento MQTT (Logs)</div>
+            <div class="card-header" style="margin-bottom: 0.25rem;">
+                <div class="card-title" style="font-size: 0.75rem;">Console de Monitoramento MQTT (Logs)</div>
             </div>
             <div id="terminal-log" class="terminal">
                 <div class="terminal-line info">> Sistema iniciado. Aguardando conexão...</div>
@@ -605,17 +594,17 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">Calibração Temporal</div>
-                    <button onclick="iniciarCalibracao()" class="btn btn-secondary" style="padding: 0.3rem 0.7rem; font-size: 0.75rem;">Calibrar Agora</button>
+                    <button onclick="iniciarCalibracao()" class="btn btn-secondary" style="padding: 0.25rem 0.6rem; font-size: 0.7rem; border-radius: 6px;">Calibrar</button>
                 </div>
                 <div>
-                    <div style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.9rem;">
+                    <div style="display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.8rem;">
                         <div style="display: flex; justify-content: space-between;">
-                            <span style="color: var(--text-muted);">Offset Estimado:</span>
-                            <span id="txt-offset" style="font-weight: 600;">Aguardando Calibração</span>
+                            <span style="color: var(--text-muted);">Offset:</span>
+                            <span id="txt-offset" style="font-weight: 600;">--</span>
                         </div>
                         <div style="display: flex; justify-content: space-between;">
-                            <span style="color: var(--text-muted);">Tempo de RTT (Médio):</span>
-                            <span id="txt-rtt" style="font-weight: 600;">-- ms</span>
+                            <span style="color: var(--text-muted);">RTT Médio:</span>
+                            <span id="txt-rtt" style="font-weight: 600;">--</span>
                         </div>
                         <div style="display: flex; justify-content: space-between;">
                             <span style="color: var(--text-muted);">Sincronização:</span>
@@ -626,9 +615,9 @@
             </div>
 
             <!-- Gráfico de Latência dos Resultados -->
-            <div class="card chart-card" style="min-height: auto; height: 180px;">
-                <div class="card-header">
-                    <div class="card-title">Gráfico de Latências (Item 7 - Artigo)</div>
+            <div class="card chart-card" style="min-height: auto; height: 110px;">
+                <div class="card-header" style="margin-bottom: 0.25rem;">
+                    <div class="card-title" style="font-size: 0.75rem;">Gráfico de Latências (Item 7)</div>
                 </div>
                 <div class="chart-container">
                     <canvas id="chart-latencia"></canvas>
@@ -640,16 +629,15 @@
         <section class="latency-section">
             <div class="latency-title-area">
                 <div>
-                    <h3 style="font-size: 1.1rem; font-weight: 700;">Resultados de Latência (Hardware & Broker MQTT)</h3>
-                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.1rem;">Valores calculados em tempo real a partir de dados reais com timestamps do ESP32.</p>
+                    <h3 style="font-size: 0.9rem; font-weight: 700;">Resultados de Latência (Hardware & Broker)</h3>
                 </div>
                 <div class="latency-actions">
                     <button id="btn-comando" onclick="enviarComandoAtuador()" class="btn" disabled>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 10h-1.26c-.76 0-1.42-.51-1.61-1.25a6.003 6.003 0 0 0-11 3A6 6 0 0 0 6 24h12a6 6 0 0 0 0-12z"/><path d="M12 2v6M12 8l-3-3M12 8l3-3"/></svg>
-                        Acionar Atuador
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 10h-1.26c-.76 0-1.42-.51-1.61-1.25a6.003 6.003 0 0 0-11 3A6 6 0 0 0 6 24h12a6 6 0 0 0 0-12z"/><path d="M12 2v6M12 8l-3-3M12 8l3-3"/></svg>
+                        Testar Atuador
                     </button>
                     <button onclick="resetarMedicoes()" class="btn btn-secondary btn-danger">
-                        Limpar Medições
+                        Limpar
                     </button>
                 </div>
             </div>
@@ -658,39 +646,38 @@
                 <!-- Tabela de Latência do Sensor -->
                 <div class="table-wrapper">
                     <div class="table-title">
-                        <span>Métricas do Sensor (Detecção -> MQTT)</span>
-                        <span style="color: var(--verde); font-size: 0.75rem;">Captação Automática</span>
+                        <span>Sensor (Detecção -> MQTT)</span>
                     </div>
                     <table>
                         <thead>
                             <tr>
-                                <th>Medição</th>
-                                <th>Captura (ESP32)</th>
+                                <th>#</th>
+                                <th>Captura (ESP)</th>
                                 <th>Recepção (MQTT)</th>
-                                <th>Latência (ms)</th>
+                                <th>Latência</th>
                             </tr>
                         </thead>
                         <tbody id="sensor-tbody">
                             <tr>
-                                <td><span class="badge-number">#1</span></td>
+                                <td><span class="badge-number">1</span></td>
                                 <td class="cell-sensor-esp">--</td>
                                 <td class="cell-sensor-rec">--</td>
                                 <td class="cell-sensor-lat" style="font-weight: 600;">--</td>
                             </tr>
                             <tr>
-                                <td><span class="badge-number">#2</span></td>
+                                <td><span class="badge-number">2</span></td>
                                 <td class="cell-sensor-esp">--</td>
                                 <td class="cell-sensor-rec">--</td>
                                 <td class="cell-sensor-lat" style="font-weight: 600;">--</td>
                             </tr>
                             <tr>
-                                <td><span class="badge-number">#3</span></td>
+                                <td><span class="badge-number">3</span></td>
                                 <td class="cell-sensor-esp">--</td>
                                 <td class="cell-sensor-rec">--</td>
                                 <td class="cell-sensor-lat" style="font-weight: 600;">--</td>
                             </tr>
                             <tr>
-                                <td><span class="badge-number">#4</span></td>
+                                <td><span class="badge-number">4</span></td>
                                 <td class="cell-sensor-esp">--</td>
                                 <td class="cell-sensor-rec">--</td>
                                 <td class="cell-sensor-lat" style="font-weight: 600;">--</td>
@@ -698,7 +685,7 @@
                             <tr class="row-average">
                                 <td>Média</td>
                                 <td colspan="2">-</td>
-                                <td id="avg-sensor-lat">-- ms</td>
+                                <td id="avg-sensor-lat">--</td>
                             </tr>
                         </tbody>
                     </table>
@@ -707,39 +694,38 @@
                 <!-- Tabela de Latência do Atuador -->
                 <div class="table-wrapper">
                     <div class="table-title">
-                        <span>Métricas do Atuador (Comando -> Ação)</span>
-                        <span style="color: var(--accent); font-size: 0.75rem;">Disparo por Botão</span>
+                        <span>Atuador (Comando -> Ação)</span>
                     </div>
                     <table>
                         <thead>
                             <tr>
-                                <th>Medição</th>
-                                <th>Disparo (Browser)</th>
-                                <th>Ação (ESP32)</th>
-                                <th>Latência (ms)</th>
+                                <th>#</th>
+                                <th>Disparo (Web)</th>
+                                <th>Ação (ESP)</th>
+                                <th>Latência</th>
                             </tr>
                         </thead>
                         <tbody id="atuador-tbody">
                             <tr>
-                                <td><span class="badge-number">#1</span></td>
+                                <td><span class="badge-number">1</span></td>
                                 <td class="cell-act-send">--</td>
                                 <td class="cell-act-esp">--</td>
                                 <td class="cell-act-lat" style="font-weight: 600;">--</td>
                             </tr>
                             <tr>
-                                <td><span class="badge-number">#2</span></td>
+                                <td><span class="badge-number">2</span></td>
                                 <td class="cell-act-send">--</td>
                                 <td class="cell-act-esp">--</td>
                                 <td class="cell-act-lat" style="font-weight: 600;">--</td>
                             </tr>
                             <tr>
-                                <td><span class="badge-number">#3</span></td>
+                                <td><span class="badge-number">3</span></td>
                                 <td class="cell-act-send">--</td>
                                 <td class="cell-act-esp">--</td>
                                 <td class="cell-act-lat" style="font-weight: 600;">--</td>
                             </tr>
                             <tr>
-                                <td><span class="badge-number">#4</span></td>
+                                <td><span class="badge-number">4</span></td>
                                 <td class="cell-act-send">--</td>
                                 <td class="cell-act-esp">--</td>
                                 <td class="cell-act-lat" style="font-weight: 600;">--</td>
@@ -747,7 +733,7 @@
                             <tr class="row-average">
                                 <td>Média</td>
                                 <td colspan="2">-</td>
-                                <td id="avg-atuador-lat">-- ms</td>
+                                <td id="avg-atuador-lat">--</td>
                             </tr>
                         </tbody>
                     </table>
@@ -786,10 +772,10 @@
         // --- Configuração dos Gráficos com Chart.js ---
         // 1. Gráfico de Ruído
         const ctxRuido = document.getElementById('chart-ruido').getContext('2d');
-        const gradRuido = ctxRuido.createLinearGradient(0, 0, 0, 300);
-        gradRuido.addColorStop(0, 'rgba(239, 68, 68, 0.45)');  // Vermelho
-        gradRuido.addColorStop(0.5, 'rgba(245, 158, 11, 0.25)'); // Amarelo
-        gradRuido.addColorStop(1, 'rgba(16, 185, 129, 0.05)');  // Verde
+        const gradRuido = ctxRuido.createLinearGradient(0, 0, 0, 200);
+        gradRuido.addColorStop(0, 'rgba(255, 23, 68, 0.4)');  // Vermelho
+        gradRuido.addColorStop(0.5, 'rgba(255, 214, 0, 0.2)'); // Amarelo
+        gradRuido.addColorStop(1, 'rgba(0, 230, 118, 0.02)');  // Verde
 
         const chartRuido = new Chart(ctxRuido, {
             type: 'line',
@@ -798,14 +784,14 @@
                 datasets: [{
                     label: 'Nível de Ruído (%)',
                     data: [],
-                    borderColor: '#3b82f6',
+                    borderColor: '#00b0ff',
                     backgroundColor: gradRuido,
                     fill: true,
                     tension: 0.4,
-                    borderWidth: 2.5,
-                    pointRadius: 2,
-                    pointHoverRadius: 6,
-                    pointBackgroundColor: '#60a5fa'
+                    borderWidth: 2,
+                    pointRadius: 1,
+                    pointHoverRadius: 4,
+                    pointBackgroundColor: '#00b0ff'
                 }]
             },
             options: {
@@ -813,14 +799,14 @@
                 maintainAspectRatio: false,
                 scales: {
                     x: {
-                        grid: { color: 'rgba(255, 255, 255, 0.04)' },
-                        ticks: { color: '#64748b', font: { family: 'Outfit' } }
+                        grid: { color: 'rgba(255, 255, 255, 0.03)' },
+                        ticks: { color: '#64748b', font: { family: 'Outfit', size: 9 } }
                     },
                     y: {
                         min: 0,
                         max: 100,
-                        grid: { color: 'rgba(255, 255, 255, 0.04)' },
-                        ticks: { color: '#64748b', font: { family: 'Outfit' } }
+                        grid: { color: 'rgba(255, 255, 255, 0.03)' },
+                        ticks: { color: '#64748b', font: { family: 'Outfit', size: 9 } }
                     }
                 },
                 plugins: {
@@ -834,23 +820,23 @@
         const chartLatencia = new Chart(ctxLatencia, {
             type: 'bar',
             data: {
-                labels: ['Run 1', 'Run 2', 'Run 3', 'Run 4', 'Média'],
+                labels: ['Med 1', 'Med 2', 'Med 3', 'Med 4', 'Média'],
                 datasets: [
                     {
                         label: 'Sensor -> MQTT',
                         data: [null, null, null, null, null],
-                        backgroundColor: 'rgba(16, 185, 129, 0.6)',
+                        backgroundColor: 'rgba(0, 230, 118, 0.5)',
                         borderColor: 'var(--verde)',
-                        borderWidth: 1.5,
-                        borderRadius: 6
+                        borderWidth: 1,
+                        borderRadius: 4
                     },
                     {
                         label: 'Comando -> Atuador',
                         data: [null, null, null, null, null],
-                        backgroundColor: 'rgba(139, 92, 246, 0.6)',
+                        backgroundColor: 'rgba(213, 0, 249, 0.5)',
                         borderColor: 'var(--accent)',
-                        borderWidth: 1.5,
-                        borderRadius: 6
+                        borderWidth: 1,
+                        borderRadius: 4
                     }
                 ]
             },
@@ -859,25 +845,19 @@
                 maintainAspectRatio: false,
                 scales: {
                     x: {
-                        grid: { color: 'rgba(255, 255, 255, 0.04)' },
-                        ticks: { color: '#64748b', font: { family: 'Outfit' } }
+                        grid: { color: 'rgba(255, 255, 255, 0.03)' },
+                        ticks: { color: '#64748b', font: { family: 'Outfit', size: 9 } }
                     },
                     y: {
                         beginAtZero: true,
-                        grid: { color: 'rgba(255, 255, 255, 0.04)' },
-                        ticks: { color: '#64748b', font: { family: 'Outfit' } },
-                        title: {
-                            display: true,
-                            text: 'Latência (ms)',
-                            color: '#94a3b8',
-                            font: { family: 'Outfit', size: 10 }
-                        }
+                        grid: { color: 'rgba(255, 255, 255, 0.03)' },
+                        ticks: { color: '#64748b', font: { family: 'Outfit', size: 9 } }
                     }
                 },
                 plugins: {
                     legend: {
                         position: 'bottom',
-                        labels: { color: '#f8fafc', font: { family: 'Outfit', size: 11 } }
+                        labels: { color: '#f1f5f9', boxWidth: 10, font: { family: 'Outfit', size: 9 } }
                     }
                 }
             }
@@ -898,7 +878,7 @@
             document.getElementById(tabId).classList.add('active');
             btn.classList.add('active');
 
-            // Força a redimensionamento dos gráficos para corrigir problemas de visualização em tabs ocultas
+            // Força o redimensionamento dos gráficos para corrigir problemas de visualização em tabs ocultas
             setTimeout(() => {
                 if (chartRuido) chartRuido.resize();
                 if (chartLatencia) chartLatencia.resize();
@@ -1138,7 +1118,7 @@
                 // Seguro
                 txtSomBadge.style.background = "var(--verde-glow)";
                 txtSomBadge.style.color = "var(--verde)";
-                barraProgresso.style.background = "linear-gradient(90deg, var(--verde), #34d399)";
+                barraProgresso.style.background = "linear-gradient(90deg, var(--verde), #00e676)";
                 
                 saudeEfeito.innerText = "Excelente / Conforto Acústico";
                 saudeEfeito.style.color = "var(--verde)";
@@ -1224,6 +1204,7 @@
             }
         }
 
+        // --- Disparo do Comando do Atuador ---
         function enviarComandoAtuador() {
             if (!isCalibrated) {
                 logNoTerminal("Alerta: Faça a calibração de tempo antes de disparar o comando.", "warn");
@@ -1282,7 +1263,7 @@
             }
 
             const avgSensor = sensorMeasurements.length > 0 ? Math.round(sumSensor / sensorMeasurements.length) : null;
-            document.getElementById("avg-sensor-lat").innerText = avgSensor !== null ? avgSensor + " ms" : "-- ms";
+            document.getElementById("avg-sensor-lat").innerText = avgSensor !== null ? avgSensor + " ms" : "--";
 
             // Atualizar tabela do Atuador
             const aRows = document.getElementById("atuador-tbody").getElementsByTagName("tr");
@@ -1304,7 +1285,7 @@
             }
 
             const avgActuator = actuatorMeasurements.length > 0 ? Math.round(sumActuator / actuatorMeasurements.length) : null;
-            document.getElementById("avg-atuador-lat").innerText = avgActuator !== null ? avgActuator + " ms" : "-- ms";
+            document.getElementById("avg-atuador-lat").innerText = avgActuator !== null ? avgActuator + " ms" : "--";
 
             // Atualizar o Gráfico de Latências
             for (let i = 0; i < 4; i++) {

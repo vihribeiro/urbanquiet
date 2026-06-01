@@ -145,7 +145,7 @@ Em situações de ruído elevado (superior a 80%, ex: 100% ou acima de 100 dB), 
 
 ## 7. Vídeo de Apresentação e Demonstração
 
-Assista à apresentação completa do projeto, com explicações sobre o conceito, o circuito simulado no Wokwi e a demonstração prática do dashboard web no YouTube:
+Assista à apresentação completa do projeto, com explicações sobre o conceito, a demonstração do protótipo rodando localmente e o funcionamento prático do dashboard web no YouTube:
 
 [![Vídeo de Apresentação do UrbanQuiet](https://img.youtube.com/vi/VgzfqdxcMQw/0.jpg)](https://youtu.be/VgzfqdxcMQw)
 

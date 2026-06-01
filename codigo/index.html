@@ -14,21 +14,21 @@
 
     <style>
         :root {
-            --bg-color: #05070c;
-            --card-bg: rgba(13, 17, 28, 0.75);
-            --card-border: rgba(255, 255, 255, 0.05);
-            --text-main: #f1f5f9;
-            --text-muted: #64748b;
-            --verde: #00e676; /* Neon Mint Green */
-            --verde-glow: rgba(0, 230, 118, 0.15);
-            --amarelo: #ffd600; /* Neon Gold */
-            --amarelo-glow: rgba(255, 214, 0, 0.15);
-            --vermelho: #ff1744; /* Neon Rose Red */
-            --vermelho-glow: rgba(255, 23, 68, 0.15);
-            --primary: #00b0ff; /* Electric Light Blue */
-            --primary-glow: rgba(0, 176, 255, 0.2);
-            --accent: #d500f9; /* Vibrant Purple */
-            --accent-glow: rgba(213, 0, 249, 0.2);
+            --bg-color: #f1f5f9;
+            --card-bg: rgba(255, 255, 255, 0.75);
+            --card-border: rgba(15, 23, 42, 0.08);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --verde: #10b981; /* Emerald Green */
+            --verde-glow: rgba(16, 185, 129, 0.12);
+            --amarelo: #d97706; /* Rich Amber */
+            --amarelo-glow: rgba(217, 119, 6, 0.12);
+            --vermelho: #ef4444; /* High Contrast Red */
+            --vermelho-glow: rgba(239, 68, 68, 0.12);
+            --primary: #0284c7; /* Ocean Blue */
+            --primary-glow: rgba(2, 132, 199, 0.15);
+            --accent: #7c3aed; /* Royal Purple */
+            --accent-glow: rgba(124, 58, 237, 0.15);
         }
 
         * {
@@ -41,8 +41,8 @@
         body {
             background-color: var(--bg-color);
             background-image: 
-                radial-gradient(at 0% 0%, rgba(0, 176, 255, 0.04) 0px, transparent 40%),
-                radial-gradient(at 100% 100%, rgba(213, 0, 249, 0.04) 0px, transparent 40%);
+                radial-gradient(at 0% 0%, rgba(2, 132, 199, 0.05) 0px, transparent 40%),
+                radial-gradient(at 100% 100%, rgba(124, 58, 237, 0.05) 0px, transparent 40%);
             color: var(--text-main);
             height: 100vh;
             max-height: 100vh;
@@ -58,7 +58,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 0.5rem 1rem;
-            background: rgba(10, 14, 23, 0.5);
+            background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--card-border);
@@ -69,7 +69,7 @@
         .header-title h1 {
             font-size: 1.25rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #00b0ff, #d500f9);
+            background: linear-gradient(135deg, #0284c7, #7c3aed);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             display: flex;
@@ -112,7 +112,7 @@
         .connected {
             color: var(--verde);
             background: var(--verde-glow);
-            border: 1px solid rgba(0, 230, 118, 0.3);
+            border: 1px solid rgba(16, 185, 129, 0.3);
         }
 
         .connected::before {
@@ -123,7 +123,7 @@
         .disconnected {
             color: var(--vermelho);
             background: var(--vermelho-glow);
-            border: 1px solid rgba(255, 23, 68, 0.3);
+            border: 1px solid rgba(239, 68, 68, 0.3);
         }
 
         .disconnected::before {
@@ -134,7 +134,7 @@
         .calibrating {
             color: var(--amarelo);
             background: var(--amarelo-glow);
-            border: 1px solid rgba(255, 214, 0, 0.3);
+            border: 1px solid rgba(217, 119, 6, 0.3);
             animation: pulse 1.5s infinite;
         }
 
@@ -153,7 +153,7 @@
         .tab-container {
             display: flex;
             gap: 0.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             padding-bottom: 0.2rem;
         }
 
@@ -172,12 +172,12 @@
 
         .tab-btn:hover {
             color: var(--text-main);
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(0, 0, 0, 0.03);
         }
 
         .tab-btn.active {
             color: var(--primary);
-            background: rgba(0, 176, 255, 0.05);
+            background: rgba(2, 132, 199, 0.08);
         }
 
         .tab-btn.active::after {
@@ -219,7 +219,7 @@
             border: 1px solid var(--card-border);
             border-radius: 12px;
             padding: 0.75rem 1rem;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -230,7 +230,7 @@
 
         .card:hover {
             transform: translateY(-1px);
-            border-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(15, 23, 42, 0.15);
         }
 
         .card-header {
@@ -255,6 +255,7 @@
             display: flex;
             align-items: baseline;
             gap: 0.2rem;
+            color: var(--text-main);
         }
 
         .card-value span.unit {
@@ -274,13 +275,13 @@
 
         /* Barra de progresso compacta */
         .progress-container {
-            background-color: rgba(255, 255, 255, 0.04);
+            background-color: rgba(0, 0, 0, 0.04);
             border-radius: 9999px;
             height: 6px;
             width: 100%;
             margin-top: 0.5rem;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.03);
         }
 
         .progress-bar {
@@ -314,7 +315,7 @@
             display: flex;
             flex-direction: column;
             gap: 0.6rem;
-            background: rgba(10, 14, 23, 0.4);
+            background: rgba(255, 255, 255, 0.4);
             border: 1px solid var(--card-border);
             border-radius: 12px;
             padding: 0.75rem;
@@ -325,7 +326,7 @@
             justify-content: space-between;
             align-items: center;
             gap: 0.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             padding-bottom: 0.4rem;
         }
 
@@ -360,26 +361,26 @@
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.08);
             color: var(--text-main);
             box-shadow: none;
         }
 
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.06);
             box-shadow: none;
         }
 
         .btn-danger {
-            background: rgba(255, 23, 68, 0.08);
-            border: 1px solid rgba(255, 23, 68, 0.15);
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.15);
             color: var(--vermelho);
             box-shadow: none;
         }
 
         .btn-danger:hover {
-            background: rgba(255, 23, 68, 0.15);
+            background: rgba(239, 68, 68, 0.15);
             box-shadow: 0 4px 12px var(--vermelho-glow);
         }
 
@@ -400,8 +401,8 @@
         }
 
         .table-wrapper {
-            background: rgba(10, 14, 23, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(0, 0, 0, 0.06);
             border-radius: 8px;
             overflow: hidden;
             display: flex;
@@ -410,11 +411,11 @@
 
         .table-title {
             padding: 0.4rem 0.6rem;
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(0, 0, 0, 0.02);
             font-size: 0.75rem;
             font-weight: 600;
             color: var(--text-muted);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -431,12 +432,13 @@
             padding: 0.4rem 0.6rem;
             color: var(--text-muted);
             font-weight: 600;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         td {
             padding: 0.4rem 0.6rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.02);
+            color: var(--text-main);
         }
 
         tr:last-child td {
@@ -445,38 +447,39 @@
 
         .row-average {
             font-weight: 700;
-            background: rgba(0, 176, 255, 0.04);
+            background: rgba(2, 132, 199, 0.04);
             color: var(--text-main);
         }
 
         .row-average td {
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 1px solid rgba(2, 132, 199, 0.12);
             padding: 0.5rem 0.6rem;
         }
 
         .badge-number {
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(0, 0, 0, 0.04);
             padding: 0.05rem 0.3rem;
             border-radius: 3px;
             font-size: 0.65rem;
+            color: var(--text-muted);
         }
 
-        /* Terminal Logs Compacto */
+        /* Terminal Logs Compacto (Mantido Escuro para Estética de Console) */
         .terminal-card {
             flex: none;
             height: 110px;
         }
 
         .terminal {
-            background-color: #020306;
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            background-color: #0f172a;
+            border: 1px solid rgba(0, 0, 0, 0.08);
             border-radius: 8px;
             padding: 0.5rem;
             font-family: 'Courier New', Courier, monospace;
             height: 75px;
             overflow-y: auto;
-            color: #00b0ff;
-            box-shadow: inset 0 1px 6px rgba(0, 0, 0, 0.9);
+            color: #38bdf8;
+            box-shadow: inset 0 1px 6px rgba(0, 0, 0, 0.15);
             font-size: 0.75rem;
         }
 
@@ -485,11 +488,11 @@
             line-height: 1.2;
         }
 
-        .terminal-line.info { color: #00b0ff; }
+        .terminal-line.info { color: #38bdf8; }
         .terminal-line.success { color: var(--verde); }
         .terminal-line.warn { color: var(--amarelo); }
         .terminal-line.error { color: var(--vermelho); }
-        .terminal-line.latency { color: #d500f9; }
+        .terminal-line.latency { color: #a78bfa; }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
@@ -498,16 +501,16 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.1);
+            background: rgba(0, 0, 0, 0.02);
         }
 
         ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.08);
             border-radius: 2px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(0, 0, 0, 0.15);
         }
     </style>
 </head>
@@ -538,7 +541,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">Intensidade de Ruído</div>
-                    <span id="badge-tipo-som" class="risk-badge" style="background: rgba(148, 163, 184, 0.15); color: var(--text-muted);">Aguardando...</span>
+                    <span id="badge-tipo-som" class="risk-badge" style="background: rgba(0, 0, 0, 0.04); color: var(--text-muted);">Aguardando...</span>
                 </div>
                 <div>
                     <div class="card-value">
@@ -557,10 +560,10 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">Efeitos na Saúde (OMS)</div>
-                    <span id="limite-exposicao" class="risk-badge" style="background: rgba(148, 163, 184, 0.15); color: var(--text-muted);">Indeterminado</span>
+                    <span id="limite-exposicao" class="risk-badge" style="background: rgba(0, 0, 0, 0.04); color: var(--text-muted);">Indeterminado</span>
                 </div>
                 <div>
-                    <div id="saude-efeito" style="font-size: 0.9rem; font-weight: 600; color: #f8fafc; margin-bottom: 0.15rem;">Aguardando leitura...</div>
+                    <div id="saude-efeito" style="font-size: 0.9rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.15rem;">Aguardando leitura...</div>
                     <p id="saude-detalhe" style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.3;">Aguardando dados MQTT para análise...</p>
                 </div>
             </div>
@@ -773,9 +776,9 @@
         // 1. Gráfico de Ruído
         const ctxRuido = document.getElementById('chart-ruido').getContext('2d');
         const gradRuido = ctxRuido.createLinearGradient(0, 0, 0, 200);
-        gradRuido.addColorStop(0, 'rgba(255, 23, 68, 0.4)');  // Vermelho
-        gradRuido.addColorStop(0.5, 'rgba(255, 214, 0, 0.2)'); // Amarelo
-        gradRuido.addColorStop(1, 'rgba(0, 230, 118, 0.02)');  // Verde
+        gradRuido.addColorStop(0, 'rgba(239, 68, 68, 0.15)');  // Vermelho
+        gradRuido.addColorStop(0.5, 'rgba(217, 119, 6, 0.08)'); // Amarelo
+        gradRuido.addColorStop(1, 'rgba(16, 185, 129, 0.01)');  // Verde
 
         const chartRuido = new Chart(ctxRuido, {
             type: 'line',
@@ -784,14 +787,14 @@
                 datasets: [{
                     label: 'Nível de Ruído (%)',
                     data: [],
-                    borderColor: '#00b0ff',
+                    borderColor: '#0284c7',
                     backgroundColor: gradRuido,
                     fill: true,
                     tension: 0.4,
                     borderWidth: 2,
                     pointRadius: 1,
                     pointHoverRadius: 4,
-                    pointBackgroundColor: '#00b0ff'
+                    pointBackgroundColor: '#0284c7'
                 }]
             },
             options: {
@@ -799,14 +802,14 @@
                 maintainAspectRatio: false,
                 scales: {
                     x: {
-                        grid: { color: 'rgba(255, 255, 255, 0.03)' },
-                        ticks: { color: '#64748b', font: { family: 'Outfit', size: 9 } }
+                        grid: { color: 'rgba(0, 0, 0, 0.04)' },
+                        ticks: { color: '#475569', font: { family: 'Outfit', size: 9 } }
                     },
                     y: {
                         min: 0,
                         max: 100,
-                        grid: { color: 'rgba(255, 255, 255, 0.03)' },
-                        ticks: { color: '#64748b', font: { family: 'Outfit', size: 9 } }
+                        grid: { color: 'rgba(0, 0, 0, 0.04)' },
+                        ticks: { color: '#475569', font: { family: 'Outfit', size: 9 } }
                     }
                 },
                 plugins: {
@@ -825,7 +828,7 @@
                     {
                         label: 'Sensor -> MQTT',
                         data: [null, null, null, null, null],
-                        backgroundColor: 'rgba(0, 230, 118, 0.5)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.65)',
                         borderColor: 'var(--verde)',
                         borderWidth: 1,
                         borderRadius: 4
@@ -833,7 +836,7 @@
                     {
                         label: 'Comando -> Atuador',
                         data: [null, null, null, null, null],
-                        backgroundColor: 'rgba(213, 0, 249, 0.5)',
+                        backgroundColor: 'rgba(124, 58, 237, 0.65)',
                         borderColor: 'var(--accent)',
                         borderWidth: 1,
                         borderRadius: 4
@@ -845,19 +848,19 @@
                 maintainAspectRatio: false,
                 scales: {
                     x: {
-                        grid: { color: 'rgba(255, 255, 255, 0.03)' },
-                        ticks: { color: '#64748b', font: { family: 'Outfit', size: 9 } }
+                        grid: { color: 'rgba(0, 0, 0, 0.04)' },
+                        ticks: { color: '#475569', font: { family: 'Outfit', size: 9 } }
                     },
                     y: {
                         beginAtZero: true,
-                        grid: { color: 'rgba(255, 255, 255, 0.03)' },
-                        ticks: { color: '#64748b', font: { family: 'Outfit', size: 9 } }
+                        grid: { color: 'rgba(0, 0, 0, 0.04)' },
+                        ticks: { color: '#475569', font: { family: 'Outfit', size: 9 } }
                     }
                 },
                 plugins: {
                     legend: {
                         position: 'bottom',
-                        labels: { color: '#f1f5f9', boxWidth: 10, font: { family: 'Outfit', size: 9 } }
+                        labels: { color: '#0f172a', boxWidth: 10, font: { family: 'Outfit', size: 9 } }
                     }
                 }
             }
@@ -1118,7 +1121,7 @@
                 // Seguro
                 txtSomBadge.style.background = "var(--verde-glow)";
                 txtSomBadge.style.color = "var(--verde)";
-                barraProgresso.style.background = "linear-gradient(90deg, var(--verde), #00e676)";
+                barraProgresso.style.background = "linear-gradient(90deg, var(--verde), #10b981)";
                 
                 saudeEfeito.innerText = "Excelente / Conforto Acústico";
                 saudeEfeito.style.color = "var(--verde)";
@@ -1144,11 +1147,11 @@
             } 
             else if (db <= 85) {
                 // Limite de risco
-                corVar = "#f97316"; // Laranja
-                corGlow = "rgba(249, 115, 22, 0.2)";
+                corVar = "#d97706"; // Laranja/Amber
+                corGlow = "rgba(217, 119, 6, 0.12)";
                 txtSomBadge.style.background = corGlow;
                 txtSomBadge.style.color = corVar;
-                barraProgresso.style.background = "linear-gradient(90deg, var(--amarelo), #f97316)";
+                barraProgresso.style.background = "linear-gradient(90deg, var(--amarelo), #d97706)";
 
                 saudeEfeito.innerText = "Estresse Acústico / Limiar de Risco";
                 saudeEfeito.style.color = corVar;
@@ -1163,7 +1166,7 @@
                 corGlow = "var(--vermelho-glow)";
                 txtSomBadge.style.background = corGlow;
                 txtSomBadge.style.color = corVar;
-                barraProgresso.style.background = "linear-gradient(90deg, #f97316, var(--vermelho))";
+                barraProgresso.style.background = "linear-gradient(90deg, #d97706, var(--vermelho))";
 
                 saudeEfeito.innerText = "Risco Crítico / Poluição Sonora Grave";
                 saudeEfeito.style.color = corVar;

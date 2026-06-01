@@ -100,6 +100,7 @@ void setup() {
   randomSeed(analogRead(35));
 
   strip.begin();
+  strip.setBrightness(128); // Limita o brilho global a 50% para conforto visual e economia
   strip.show();
 
   pinMode(PIN_SENSOR, INPUT);

@@ -4,7 +4,16 @@ Este repositório contém a documentação técnica, o firmware e o dashboard de
 
 ---
 
-## 1. Descrição de Funcionamento Geral
+## 1. Estrutura de Pastas do Repositório
+
+A organização do projeto segue a estrutura padrão de projetos de Objetos Inteligentes Conectados:
+* `[codigo/](codigo)`: Código-fonte do firmware do ESP32 (`urbanquiet.md`) e da interface do dashboard web (`index.html`).
+* `[docs/](docs)`: Documentos oficiais do projeto, incluindo o [artigo.pdf](docs/artigo.pdf).
+* `[imagens/](imagens)`: Imagens do hardware, da prototipagem e capturas de tela dos experimentos de latência.
+
+---
+
+## 2. Descrição de Funcionamento Geral
 
 O UrbanQuiet opera em um ciclo contínuo de amostragem acústica, processamento de borda e comunicação em rede:
 1. **Captação de Áudio**: O sensor de som capta as ondas de pressão sonora locais continuamente.
@@ -18,7 +27,7 @@ O UrbanQuiet opera em um ciclo contínuo de amostragem acústica, processamento 
 
 ---
 
-## 2. Descrição de Hardware Utilizado
+## 3. Descrição de Hardware Utilizado
 
 O hardware foi projetado para ser acessível, modular e replicável. A arquitetura física é descrita a seguir:
 
@@ -42,7 +51,7 @@ O hardware foi projetado para ser acessível, modular e replicável. A arquitetu
 
 ---
 
-## 3. Interfaces, Protocolos e Módulos de Comunicação
+## 4. Interfaces, Protocolos e Módulos de Comunicação
 
 O canal de transporte e interação é baseado no protocolo de mensageria leve **MQTT** (Message Queuing Telemetry Transport), rodando sob a pilha de protocolos **TCP/IP**.
 
@@ -85,9 +94,9 @@ O canal de transporte e interação é baseado no protocolo de mensageria leve *
 
 ---
 
-## 4. Software Desenvolvido e Documentação de Código
+## 5. Software Desenvolvido e Documentação de Código
 
-### Firmware do ESP32 (`urbanquiet.md`)
+### Firmware do ESP32 (`codigo/urbanquiet.md`)
 O firmware foi desenvolvido em C++ sob a Arduino IDE usando a biblioteca **PubSubClient** para comunicação MQTT e **Adafruit_NeoPixel** para controle físico dos LEDs. 
 
 * **`setup()`**: Configura pinos, inicializa a fita LED, desativa a proteção Brown-Out (`WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0)`) para evitar resets devido a picos de corrente da antena Wi-Fi, inicia a conexão Wi-Fi e configura o servidor e callback MQTT.
@@ -98,7 +107,7 @@ O firmware foi desenvolvido em C++ sob a Arduino IDE usando a biblioteca **PubSu
   * Envia dados formatados em JSON a cada 1000ms.
 * **`callback(...)`**: Escuta os tópicos de ping e comando, disparando as ações de atuador correspondentes e publicando os resultados imediatamente.
 
-### Dashboard Frontend (`index.html`)
+### Dashboard Frontend (`codigo/index.html`)
 Desenvolvido em HTML5/CSS3 baunilha com JavaScript puro para garantir responsividade e leveza.
 
 * **Integração Gráfica**: Utiliza a biblioteca **Chart.js** via CDN para desenhar o gráfico em tempo real de nível de ruído e o gráfico comparativo de latência dos resultados das 4 baterias de teste.
@@ -107,7 +116,34 @@ Desenvolvido em HTML5/CSS3 baunilha com JavaScript puro para garantir responsivi
 
 ---
 
-## 5. Instruções de Reprodução e Execução
+## 6. Resultados e Funcionamento do Protótipo
+
+Abaixo estão exibidas as capturas de tela dos experimentos reais conduzidos na dashboard do **UrbanQuiet**, as quais comprovam o correto funcionamento da calibração MQTT de tempo real e o cálculo das médias de latência de sensor e atuador:
+
+### Visão Geral do Painel e Gráficos de Monitoramento
+O painel exibe de forma clara e limpa os decibéis estimados, a classificação de risco OMS e a calibração de tempo ativa:
+![Dashboard Visão Geral](imagens/dashboard_view.png)
+
+O monitor acústico plota de forma contínua a curva de ruído do ambiente:
+![Gráficos de Tempo Real](imagens/realtime_chart.png)
+
+### Experimento de Latência (Baterias de Teste do Item 7)
+Medições automáticas do sensor e testes de disparo do atuador preenchendo as tabelas de métricas locais:
+![Resultados de Latência](imagens/latency_metrics.png)
+
+Gráfico de barras gerado pelo sistema comparando os tempos em milissegundos das 4 rodadas e a média:
+![Gráfico de Barras de Latência](imagens/latency_chart.png)
+
+### Console de Auditoria e Teste do Atuador Físico
+O console de logs da dashboard detalha cada mensagem MQTT transmitida e recebida:
+![Logs MQTT](imagens/mqtt_logs.png)
+
+Exemplo de visualização física simulada da montagem em hardware conectada:
+![Teste Físico dos LEDs](imagens/hardware_assembly.png)
+
+---
+
+## 7. Instruções de Reprodução e Execução
 
 ### Pré-requisitos de Software
 1. **Arduino IDE** (v1.8 ou superior).
@@ -115,17 +151,17 @@ Desenvolvido em HTML5/CSS3 baunilha com JavaScript puro para garantir responsivi
 3. Instalar as bibliotecas **PubSubClient** e **Adafruit_NeoPixel** através do Gerenciador de Bibliotecas.
 
 ### Configuração Física
-1. Realize as conexões entre o ESP32, o sensor KY-038 e a fita LED WS2812B conforme a tabela de pinagem do item 2.
+1. Realize as conexões entre o ESP32, o sensor KY-038 e a fita LED WS2812B conforme a tabela de pinagem do item 3.
 2. Certifique-se de ligar o GND da fonte de 5V ao GND do ESP32.
 
 ### Configuração do Firmware
-1. Abra o arquivo `urbanquiet.md` na Arduino IDE.
+1. Abra o arquivo `codigo/urbanquiet.md` na Arduino IDE.
 2. Modifique as constantes `ssid` e `password` com o nome e a senha do seu Wi-Fi local.
 3. Grave o código no ESP32.
 4. Abra o Monitor Serial a `115200` bps para conferir os logs de conexão com a rede e com o Broker.
 
 ### Execução da Dashboard
-1. Dê um duplo-clique no arquivo `index.html` para abri-lo no seu navegador.
+1. Abra o arquivo `codigo/index.html` diretamente no seu navegador.
 2. Certifique-se de estar conectado à internet. O cabeçalho da página deve atualizar o status para **"Broker Online"** em poucos segundos.
 3. O status de Calibração mudará para **"Calibrado"** assim que a sequência de 4 pings automáticos for processada com o hardware.
 

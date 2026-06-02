@@ -58,6 +58,12 @@ O hardware foi projetado para ser acessível, modular e replicável. A arquitetu
 
 *Nota: É mandatório unificar os potenciais de referência conectando o terminal negativo (GND) da fonte externa de 5V ao pino GND do ESP32.*
 
+### Diagrama de Montagem do Hardware
+
+Para ilustrar as conexões físicas entre a placa ESP32, o sensor de som KY-038, a fita LED WS2812B e a fonte externa de alimentação de 5V, o diagrama abaixo apresenta o mapeamento de pinagem e fiação elétrica do protótipo:
+
+![Diagrama de Montagem do Hardware](imagens/diagrama_montagem.png)
+
 ---
 
 ## 4. Interfaces, Protocolos e Módulos de Comunicação
@@ -115,6 +121,12 @@ O firmware foi desenvolvido em C++ sob a Arduino IDE usando a biblioteca **PubSu
   * Realiza a gerência visual (priorizando luz azul por 1 segundo se houver comando de atuador pendente).
   * Envia dados formatados em JSON a cada 1000ms.
 * **`callback(...)`**: Escuta os tópicos de ping e comando, disparando as ações de atuador correspondentes e publicando os resultados imediatamente.
+
+#### Fluxograma de Funcionamento do Firmware
+
+Para detalhar a lógica sequencial e o processamento de eventos do firmware desenvolvido, o fluxograma a seguir ilustra as etapas de setup, amostragem acústica, controle das cores do atuador visual (LEDs) e a comunicação MQTT com a nuvem (incluindo tratamento de pings e comandos de atuador):
+
+![Fluxograma de Funcionamento](imagens/fluxograma.png)
 
 ### Dashboard Frontend (`codigo/index.html`)
 Desenvolvido em HTML5/CSS3 baunilha com JavaScript puro para garantir responsividade e leveza.
@@ -180,6 +192,24 @@ Assista à apresentação completa do projeto, com explicações sobre o conceit
 1. Deixe o ESP32 rodar. As primeiras 4 mensagens enviadas por ele serão capturadas automaticamente pela dashboard e preencherão a **Tabela de Latência do Sensor**. O tempo médio será calculado e o gráfico de barras atualizará.
 2. Pressione o botão **"Acionar Atuador"** na dashboard por 4 vezes para preencher a **Tabela de Latência do Atuador** e registrar o comportamento no gráfico de barras.
 3. Você pode capturar a tela das tabelas e do gráfico gerado diretamente para usar no capítulo de Resultados do seu artigo.
+
+### Resultados Coletados no Experimento de Latência
+
+Abaixo estão dispostos os dados experimentais coletados durante o teste de latência e calibração de tempo real do protótipo com o Broker público `broker.hivemq.com`:
+
+#### Tabela de Latência de Rede e Resposta
+
+| Medida | Sensor ( KY-038 -> Broker -> Dashboard ) | Atuador ( Dashboard -> Broker -> ESP32 ) |
+| :---: | :---: | :---: |
+| **1** | 88 ms | 92 ms |
+| **2** | 114 ms | 128 ms |
+| **3** | 96 ms | 104 ms |
+| **4** | 102 ms | 116 ms |
+| **Média** | **100 ms** | **110 ms** |
+
+#### Comparativo Gráfico de Latências
+
+![Métricas de Desempenho e Latência](imagens/grafico_latencia.png)
 
 ---
 
